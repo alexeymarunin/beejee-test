@@ -1,18 +1,9 @@
 <?php
 
 namespace app\components;
-use LessQL\Result;
 
+use LessQL\Database as BaseDatabase;
 
-/**
- * Класс Database
- *
- * @package app\components
- *
- * @method Result users()
- * @method Result media()
- * @method Result tasks()
- */
-class Database extends \LessQL\Database
+class Database extends BaseDatabase
 {
 }

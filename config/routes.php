@@ -14,18 +14,6 @@ return [
         'action'     => 'index',
     ],
 
-    'registerForm' => [
-        'path'       => '/register',
-        'method'     => 'GET',
-        'controller' => 'user',
-        'action'     => 'register',
-    ],
-    'userRegister' => [
-        'path'       => '/register',
-        'method'     => 'POST',
-        'controller' => 'user',
-        'action'     => 'register',
-    ],
     'loginForm' => [
         'path'       => '/login',
         'method'     => 'GET',
@@ -92,11 +80,5 @@ return [
         'method'     => 'GET',
         'controller' => 'task',
         'action'     => 'delete',
-    ],
-    'imageUpload' => [
-        'path'       => '/image/upload',
-        'method'     => 'POST',
-        'controller' => 'task',
-        'action'     => 'upload',
     ],
 ];

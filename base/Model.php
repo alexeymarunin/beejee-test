@@ -4,186 +4,111 @@ namespace app\base;
 
 use app\components\Database;
 
-
-/**
- * Класс Model
- *
- * @package app\base
- */
 class Model
 {
-    /**
-     * @var int
-     */
-    public $id;
+    public int $id = 0;
 
-    /**
-     * @var array
-     */
-    protected $errors = [];
+    protected array $errors = [];
 
-    /**
-     * @var Database
-     */
-    protected $db;
+    protected Database $db;
 
-    /**
-     * @var string
-     */
-    protected $table;
+    protected string $table;
 
 
-    /**
-     * @param Database $db
-     */
-    public function __construct( $db )
+    public function __construct(Database $db)
     {
         $this->db = $db;
     }
 
-    /**
-     * @param array $data
-     *
-     * @return bool
-     */
-    public function load( $data )
+    public function load(array $data): bool
     {
         $loaded = false;
-        foreach ( $data as $name => $value ) {
-            if ( property_exists( $this, $name ) ) {
+        foreach ($data as $name => $value) {
+            if (property_exists($this, $name)) {
                 $this->$name = $value;
                 $loaded = true;
             }
         }
-
         return $loaded;
     }
 
-    /**
-     * @return bool
-     */
-    public function validate()
+    public function validate(): bool
     {
         return true;
     }
 
-    /**
-     * @param string $attribute
-     * @param string $error
-     *
-     */
-    public function addError( $attribute, $error )
+    public function addError(string $attribute, string $error): void
     {
         $this->errors[$attribute] = $error;
     }
 
-    /**
-     * @param string $attribute
-     *
-     * @return bool
-     */
-    public function hasErrors( $attribute = null )
+    public function hasErrors($attribute = null): bool
     {
-        if ( $attribute ) {
-            return isset( $this->errors[$attribute] );
+        if ($attribute) {
+            return isset($this->errors[$attribute]);
         }
-        return !empty( $this->errors );
+        return !empty($this->errors);
     }
 
-    /**
-     *
-     */
-    public function clearErrors()
+    public function clearErrors(): void
     {
         $this->errors = [];
     }
 
-    /**
-     * @param string $attribute
-     * 
-     * @return array
-     */
-    public function getError( $attribute )
+    public function getError(string $attribute): ?string
     {
-        return ( isset( $this->errors[$attribute] ) ? $this->errors[$attribute] : null );
+        return (isset($this->errors[$attribute]) ? $this->errors[$attribute] : null);
     }
 
-    /**
-     * @return array
-     */
-    public function getErrors()
+    public function getErrors(): array
     {
         return $this->errors;
     }
 
-    /**
-     * @param bool $validate
-     *
-     * @return bool
-     */
-    public function save( $validate = true )
+    public function save(bool $validate = true): bool
     {
-        if ( $validate && !$this->validate() ) {
+        if ($validate && !$this->validate()) {
             return false;
         }
-
         $data = [];
         $attributes = $this->getAttributes();
-        foreach ( $attributes as $attribute ) {
+        foreach ($attributes as $attribute) {
             $data[$attribute] = $this->$attribute;
         }
-
-        if ( $this->isNew() ) {
-            $row = $this->getDb()->createRow( static::tableName(), [] );
-            $row->setData( $data );
+        unset($data['id']);
+        if ($this->isNew()) {
+            $row = $this->getDb()->createRow(static::tableName(), []);
+            $row->setData($data);
             $data = $row->save()->getData();
-            $this->load( $data );
+            $this->load($data);
+        } else {
+            $this->getDb()->update(static::tableName(), $data, ['id = ' . $this->id]);
         }
-        else {
-            unset( $data['id'] );
-            $this->getDb()->update( static::tableName(), $data, [ 'id = ' .$this->id ] );
-        }
-
         return true;
     }
 
-    /**
-     * @return bool
-     */
-    public function delete()
+    public function delete(): bool
     {
-        $this->getDb()->delete( static::tableName(), [ 'id = ' .$this->id ] );
+        $this->getDb()->delete(static::tableName(), ['id = ' . $this->id]);
         return true;
     }
 
-    /**
-     * @return bool
-     */
-    public function isNew()
+    public function isNew(): bool
     {
         return !$this->id;
     }
 
-    /**
-     * @return array
-     */
-    public function getAttributes()
+    public function getAttributes(): array
     {
         return [];
     }
 
-    /**
-     * @return Database
-     */
-    public function getDb()
+    public function getDb(): Database
     {
         return $this->db;
     }
 
-    /**
-     * @return string
-     */
-    public static function tableName()
+    public static function tableName(): string
     {
         return null;
     }

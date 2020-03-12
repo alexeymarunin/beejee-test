@@ -6,12 +6,13 @@ use app\base\View;
  * @var View $this
  * @var string $content
  */
-    
-    
-?><!DOCTYPE html>
+
+?>
+<!DOCTYPE html>
 <html lang="ru">
+
 <head>
-    <title><?= $this->getApp()->getName() ?></title>
+    <title><?php echo $this->getApp()->getName() ?></title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -30,38 +31,33 @@ use app\base\View;
                     &nbsp;
                 </li>
                 <li class="nav-item">
-                    <?php if ( !$this->getApp()->isGuest() ) : ?>
-                        <span class="badge badge-secondary"><?= $this->getApp()->getUser()->login ?></span>
+                    <?php if (!$this->getApp()->isGuest()) : ?>
+                        <span class="badge badge-secondary"><?php echo $this->getApp()->getUser()->login ?></span>
                     <?php else : ?>
                         <span class="badge badge-secondary">Гость</span>
                     <?php endif ?>
                 </li>
                 <li class="nav-item">
                     &nbsp;
-                    <?php if ( !$this->getApp()->isGuest() ) : ?>
+                    <?php if (!$this->getApp()->isGuest()) : ?>
                         <a href="/logout" class="btn btn-primary btn-sm">Выйти</a>
                     <?php else : ?>
                         <a href="/login" class="btn btn-success btn-sm">Войти</a>
-                        <a href="/register" class="btn-sm">Регистрация</a>
                     <?php endif ?>
                 </li>
             </ul>
         </nav>
 
-        <?= $content ?>
+        <?php echo $content ?>
 
-        <p>
-        <p>
-        <p>
-            <hr>
+        <hr>
         <footer>
-            <div class="float-right">Марунин Алексей &copy; 2017</div>
+            <div class="float-right">Марунин Алексей &copy; 2020</div>
         </footer>
     </div>
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
-    <script src="/assets/js/app.js" ></script>
 </body>
-</html>
 
+</html>

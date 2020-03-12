@@ -5,160 +5,92 @@ namespace app\base;
 use app\components\Application;
 use app\components\Database;
 
+use Klein\AbstractResponse;
 
-/**
- * Класс Controller
- * Базовый контроллер
- *
- * @package app\base
- */
 class Controller
 {
-    /**
-     * @var string
-     * Текущее действие контроллера
-     */
-    public $action;
+    public string $action = 'index';
 
-    /**
-     * @var string
-     */
-    public $layout = 'main_layout';
+    public string $layout = 'main_layout';
 
-    /**
-     * @var string
-     */
-    protected $id;
+    protected string $id;
 
-    /**
-     * @var Application
-     */
-    protected $app;
+    protected Application $app;
 
-    /**
-     * Controller constructor.
-     *
-     * @param string $id
-     * @param Application $app
-     */
-    public function __construct( $id, $app )
+    public function __construct(string $id, Application $app)
     {
         $this->id = $id;
         $this->app = $app;
     }
 
-    /**
-     * @param string $action
-     *
-     * @return mixed
-     */
-    public function runAction( $action )
+    public function runAction(string $action)
     {
-        if ( !method_exists( $this, $action ) ) {
-            $action = 'action' . ucfirst( $action );
+        if (!method_exists($this, $action)) {
+            $action = 'action' . ucfirst($action);
         }
-        if ( !method_exists( $this, $action ) ) {
+        if (!method_exists($this, $action)) {
             $this->getApp()->action404();
         }
-
-        return call_user_func( [ $this, $action ] );
+        return call_user_func([$this, $action]);
     }
 
-    /**
-     * @param string $viewName
-     * @param array $params
-     *
-     * @return string
-     */
-    public function render( $viewName, $params = [ ] )
+    public function render(string $viewName, array $params = []): string
     {
-        $view = new View( $this->getApp(), $this->id );
-        $content = $view->render( $viewName, $params );
-
-        $layout = new View( $this->getApp() );
-        $page = $layout->render( $this->layout, [ 'content' => $content ] );
-
+        $view = new View($this->getApp(), $this->id);
+        $content = $view->render($viewName, $params);
+        $layout = new View($this->getApp());
+        $page = $layout->render($this->layout, ['content' => $content]);
         return $page;
     }
 
-    /**
-     * @param string $url
-     * @param int $code
-     *
-     * @return \Klein\AbstractResponse
-     */
-    public function redirect( $url, $code = 302 )
+    public function redirect(string $url, int $code = 302): AbstractResponse
     {
-        if ( substr( $url, 0, 1 ) == '@' ) {
-            $routeName = ltrim( $url, '@' );
-            /** @var \Klein\Route $route */
-            $route = $this->getApp()->getRouter()->routes()->get( $routeName );
-            if ( $route ) {
+        if (substr($url, 0, 1) == '@') {
+            $routeName = ltrim($url, '@');
+            $route = $this->getApp()->getRouter()->routes()->get($routeName);
+            if ($route) {
                 $url = $route->getPath();
             }
         }
-
-        return $this->getApp()->getResponse()->redirect( $url, $code );
+        return $this->getApp()->getResponse()->redirect($url, $code);
     }
 
-    /**
-     * @return \Klein\AbstractResponse
-     */
-    public function back()
+    public function back(): AbstractResponse
     {
-        $referer = $this->getApp()->getRequest()->server()->get( 'HTTP_REFERER' );
-        if ( null !== $referer ) {
-            return $this->redirect( $referer );
-        }
-        else {
+        $referer = $this->getApp()->getRequest()->server()->get('HTTP_REFERER');
+        if (null !== $referer) {
+            return $this->redirect($referer);
+        } else {
             return $this->refresh();
         }
     }
 
-    /**
-     * @return \Klein\AbstractResponse
-     */
-    public function refresh()
+    public function refresh(): AbstractResponse
     {
-        return $this->redirect( $this->getApp()->getRequest()->uri() );
+        return $this->redirect($this->getApp()->getRequest()->uri());
     }
 
-    /**
-     * @return bool
-     */
-    public function isPost()
+    public function isPost(): bool
     {
-        return ( $_SERVER['REQUEST_METHOD'] === 'POST' );
+        return ($_SERVER['REQUEST_METHOD'] === 'POST');
     }
 
-    /**
-     * @return bool
-     */
-    public function isGuest()
+    public function isGuest(): bool
     {
-        return ( $this->getApp()->isGuest() );
+        return ($this->getApp()->isGuest());
     }
 
-    /**
-     * @return bool
-     */
-    public function isAdmin()
+    public function isAdmin(): bool
     {
-        return ( $this->getApp()->isAdmin() );
+        return ($this->getApp()->isAdmin());
     }
 
-    /**
-     * @return Application
-     */
-    public function getApp()
+    public function getApp(): Application
     {
         return $this->app;
     }
 
-    /**
-     * @return Database
-     */
-    public function getDb()
+    public function getDb(): Database
     {
         return $this->getApp()->getDb();
     }

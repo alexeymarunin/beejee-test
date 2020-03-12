@@ -11,7 +11,7 @@ use app\models\LoginForm;
 ?>
 <h1>Вход в систему</h1>
 
-<?= $this->alertModelErrors( $model ) ?>
+<?= $this->alertModelErrors($model) ?>
 
 <form method="post">
     <div class="form-group row">

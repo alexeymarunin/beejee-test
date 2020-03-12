@@ -5,89 +5,48 @@ namespace app\base;
 
 use app\components\Application;
 
-/**
- * Класс View
- *
- * @package app\base
- */
 class View
 {
-    /**
-     * @var  Application
-     */
-    protected $app;
+    protected Application $app;
 
-    /**
-     * @var string
-     */
-    protected $path;
+    protected string $path;
 
-    /**
-     * View constructor.
-     *
-     * @param Application$app
-     * @param string  $path
-     */
-    public function __construct( $app, $path = null )
+    public function __construct(Application $app, string $path = null)
     {
         $this->app = $app;
-        if ( $path ) {
+        if ($path) {
             $this->path = BEEJEE_ROOT . '/views/' . $path . '/';
-        }
-        else {
+        } else {
             $this->path = BEEJEE_ROOT . '/views/';
         }
     }
 
-    /**
-     * @param string $viewName
-     * @param array $params
-     *
-     * @return string
-     */
-    public function render( $viewName, $params = [] )
+    public function render(string $viewName, array $params = []): string
     {
         $viewPath = $this->path . $viewName . '.php';
-        return $this->renderFile( $viewPath, $params );
+        return $this->renderFile($viewPath, $params);
     }
 
-    /**
-     * @param string $path
-     * @param array $params
-     *
-     * @return string
-     */
-    public function renderFile( $path, $params = [] )
+    public function renderFile(string $path, array $params = []): string
     {
         ob_start();
-        ob_implicit_flush( false );
-        extract( $params, EXTR_OVERWRITE );
-        require( $path );
-
+        ob_implicit_flush(false);
+        extract($params, EXTR_OVERWRITE);
+        require($path);
         return ob_get_clean();
     }
 
-    /**
-     * @param Model $model
-     *
-     * @return string
-     */
-    public function alertModelErrors( Model $model )
+    public function alertModelErrors(Model $model): string
     {
         $errors = $model->getErrors();
-
         $html = '';
-        foreach ( $errors as $attribute => $error ) {
+        foreach ($errors as $attribute => $error) {
             $html .= '<div class="alert alert-danger" role="alert">' . $error . '</div>';
         }
-
         return $html;
     }
 
-    /**
-     * @return Application
-     */
-    public function getApp()
+    public function getApp(): Application
     {
         return $this->app;
     }

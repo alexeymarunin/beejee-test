@@ -11,36 +11,33 @@ use app\models\Task;
 
 ?>
 
-
 <h1>
-    <?= $model->status ?
+    <?php echo $model->status ?
         '<i class="fa fa-check-circle text-success" aria-hidden="true"></i>' :
         '<i class="fa fa-exclamation-triangle text-danger" aria-hidden="true"></i>'
     ?>
-    Задача #<?= $model->id ?>
+    Задача #<?php echo $model->id ?>
 </h1>
 
 <div class="card" style="width: 320px;">
     <div class="card-header">
-        <h4 class="card-title"><?= $model->username ?></h4>
-        <div><?= $model->email ?></div>
+        <h4 class="card-title"><?php echo $model->username ?></h4>
+        <div><?php echo $model->email ?></div>
     </div>
-    <img class="card-img-center img-thumbnail" src="<?= $model->getImageUrl() ?>" alt="Task image">
     <div class="card-body">
 
         <p class="card-text">
-            <?= $model->content ?>
+            <?php echo $model->content ?>
         </p>
     </div>
     <div class="card-footer text-muted">
-        <?php if ( $canAccept ) : ?>
-            <a href="/task/<?= $model->id ?>/update" class="btn btn-primary btn-sm">Изменить</a>
-            <a href="/task/<?= $model->id ?>/accept?status=<?= $model->status == 1 ? 0 : 1 ?>" class="btn btn-<?= $model->status == 1 ? 'danger' : 'success' ?> btn-sm">
-                <?= $model->status == 1 ? 'Снять' : 'Выполнить'?>
+        <?php if ($canAccept) : ?>
+            <a href="/task/<?php echo $model->id ?>/update" class="btn btn-primary btn-sm">Изменить</a>
+            <a href="/task/<?php echo $model->id ?>/accept?status=<?php echo $model->status == 1 ? 0 : 1 ?>" class="btn btn-<?php echo $model->status == 1 ? 'danger' : 'success' ?> btn-sm">
+                <?php echo $model->status == 1 ? 'Снять' : 'Выполнить' ?>
             </a>
         <?php endif ?>
     </div>
 </div>
 
-<a href="#" onclick="window.history.back()" class="btn-lg">Назад</a>
-<div class="clearfix"></div>
+<a href="#" onclick="window.history.back()" class="btn btn-secondary"><i class="fa fa-arrow-left" aria-hidden="true"></i> Назад</a>

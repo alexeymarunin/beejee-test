@@ -3,103 +3,48 @@
 namespace app\models;
 
 use app\base\Model;
-use app\components\Database;
 
+use EmailValidator\Validator as EmailValidator;
 
-/**
- * Класс Task
- *
- * @package app\models
- */
 class Task extends Model
 {
-    /**
-     * @var string
-     */
-    public $content;
+    const STATUS_PENDING = 0;
+    const STATUS_DONE = 1;
 
-    /**
-     * @var string
-     */
-    public $username;
+    public string $username = '';
 
-    /**
-     * @var string
-     */
-    public $email;
+    public string $email = '';
 
-    /**
-     * @var int
-     */
-    public $media_id = 1;
+    public string $content = '';
 
-    /**
-     * @var int
-     */
-    public $status = 0;
+    public int $status = self::STATUS_PENDING;
 
-
-    /**
-     * @inheritdoc
-     */
-    public function getAttributes()
+    public function getAttributes(): array
     {
-        return [ 'id', 'content', 'username', 'email', 'media_id', 'status' ];
+        return ['id', 'content', 'username', 'email', 'status'];
     }
 
-    /**
-     * @return string
-     */
-    public function getImageUrl()
-    {
-        return static::imageUrl( $this->media_id, $this->getDb() );
-    }
-
-    /**
-     * @param int $mediaId
-     * @param Database $db
-     * 
-     * @return string
-     */
-    public static function imageUrl( $mediaId, $db )
-    {
-        /** @var Media $media */
-        $media = $db->media()->where( 'id', $mediaId )->fetch();
-        $url = ( $media ? Media::url( $media->filename ) : Media::url( null ) );
-
-        return $url;
-    }
-    
-    /**
-     * @inheritdoc
-     */
-    public function validate()
+    public function validate(): bool
     {
         $this->clearErrors();
-
-        if ( !$this->username ) {
-            $this->addError( 'username', 'Введите имя пользователя' );
+        if (!$this->username) {
+            $this->addError('username', 'Введите имя пользователя');
         }
-        if ( !$this->email ) {
-            $this->addError( 'email', 'Введите email' );
-        }
-        else {
-            $validator = new \EmailValidator\Validator();
-            if ( !$validator->isValid( $this->email ) ) {
-                $this->addError( 'email', 'Неверный формат email' );
+        if (!$this->email) {
+            $this->addError('email', 'Введите email');
+        } else {
+            $validator = new EmailValidator();
+            if (!$validator->isValid($this->email)) {
+                $this->addError('email', 'Неверный формат email');
             }
         }
-        if ( !$this->content ) {
-            $this->addError( 'content', 'Введите описание задачи' );
+        if (!$this->content) {
+            $this->addError('content', 'Введите описание задачи');
         }
-
         return !$this->hasErrors();
     }
 
-    /**
-     * @return string
-     */
-    public static function tableName()
+    public static function tableName(): string
     {
         return 'tasks';
     }
